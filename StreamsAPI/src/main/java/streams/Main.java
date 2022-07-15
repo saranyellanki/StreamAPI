@@ -1,7 +1,9 @@
 package streams;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -51,5 +53,35 @@ public class Main {
                 .reduce(1.0,(partial,total) -> partial*total);
 
         System.out.println(sal);
+
+        // find first
+        Employee firstEmp = employees.stream()
+                .filter(employee -> employee.getSalary() > 5)
+                .map(employee -> new Employee(
+                employee.getEmpId(),
+                employee.getName(),
+                employee.getSalary(),
+                employee.getProjects()
+                ))
+                .findFirst()
+                .orElse(null);
+
+        System.out.println(firstEmp);
+
+        //min and max
+        // throw exception
+        Employee maxSal = employees.stream()
+                .max(Comparator.comparing(employee -> employee.getSalary()))
+                .orElseThrow(NoSuchElementException::new);
+
+        System.out.println(maxSal);
+
+        // flat map
+       String projects =  employees.stream()
+                .map(employee -> employee.getProjects())
+                .flatMap(String -> String.stream())
+                .collect(Collectors.joining(","));
+
+        System.out.println(projects);
     }
 }
